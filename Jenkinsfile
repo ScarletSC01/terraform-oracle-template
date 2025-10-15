@@ -10,19 +10,20 @@ pipeline {
     }
 
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key')
         PROJECT_ID = 'jenkins-terraform-demo-472920'
-        REGION = 'us-central1'
-        ZONE = 'us-central1-a'
-        TFVARS = "-var=credentials_file=./gcp-key.json -var=project_id=$PROJECT_ID -var=region=$REGION -var=zone=$ZONE"
+        REGION     = 'us-central1'
+        ZONE       = 'us-central1-a'
     }
 
     stages {
         stage('Preparar credenciales') {
             steps {
-                sh '''
-                echo "$GOOGLE_APPLICATION_CREDENTIALS" > ./gcp-key.json
-                '''
+                withCredentials([file(credentialsId: 'gcp-sa-key', variable: 'GCP_KEY_FILE')]) {
+                    script {
+                        // Leer contenido del archivo JSON para pasarlo como variable a Terraform
+                        env.CREDENTIALS_JSON = readFile(env.GCP_KEY_FILE).trim()
+                    }
+                }
             }
         }
 
@@ -35,15 +36,16 @@ pipeline {
         stage('Ejecutar Terraform') {
             steps {
                 script {
-            if (params.ACTION == 'plan') {
-                sh "terraform plan $TFVARS -out=tfplan"
-            } else if (params.ACTION == 'apply') {
-                // Genera el plan si no existe
-                sh "terraform plan $TFVARS -out=tfplan"
-                sh "terraform apply -auto-approve tfplan"
-            } else if (params.ACTION == 'destroy') {
-                sh "terraform destroy -auto-approve $TFVARS"
-            }
+                    def tfvars = "-var='credentials_content=${env.CREDENTIALS_JSON}' -var='project_id=${PROJECT_ID}' -var='region=${REGION}' -var='zone=${ZONE}'"
+                    
+                    if (params.ACTION == 'plan') {
+                        sh "terraform plan ${tfvars} -out=tfplan"
+                    } else if (params.ACTION == 'apply') {
+                        // Aplicar directamente sin volver a pasar variables al plan
+                        sh "terraform apply -auto-approve ${tfvars}"
+                    } else if (params.ACTION == 'destroy') {
+                        sh "terraform destroy -auto-approve ${tfvars}"
+                    }
                 }
             }
         }
