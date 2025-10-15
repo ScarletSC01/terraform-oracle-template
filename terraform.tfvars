@@ -1,0 +1,6 @@
+project_id    = "jenkins-terraform-demo-472920"
+region        = "us-central1"
+zone          = "us-central1-a"
+instance_name = "oracle-db-instance"
+machine_type  = "e2-medium"
+image         = "projects/oracle-linux-cloud/global/images/oracle-linux-8"
