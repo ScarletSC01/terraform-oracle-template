@@ -8,7 +8,7 @@ resource "google_compute_instance" "oracle_instance" {
   boot_disk {
     initialize_params {
       # Imagen oficial de Oracle Linux (la más reciente estable)
-      image = "projects/oracle-cloud-public/global/images/oracle-linux-8-v20250820"
+      image = "projects/oracle-linux-cloud/global/images/family/oracle-linux-8"
       size  = 50
     }
   }
