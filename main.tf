@@ -7,7 +7,7 @@ resource "google_compute_instance" "oracle_instance" {
 
   boot_disk {
     initialize_params {
-      image = var.image
+      image = "projects/oracle-linux-cloud/global/images/oracle-linux-8-optimized-gcp"
       size  = 50
     }
   }
