@@ -37,3 +37,9 @@ variable "image" {
   type        = string
   default     = "projects/oracle-cloud-public/global/images/oracle-linux-8"
 }
+
+variable "credentials_content" {
+  type        = string
+  description = "Contenido JSON de las credenciales GCP"
+}
+
