@@ -2,10 +2,9 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "5.0.0"
+      version = ">=5.0.0"
     }
   }
-
   required_version = ">= 1.5.0"
 }
 
@@ -16,6 +15,7 @@ provider "google" {
   zone        = var.zone
 }
 
+# Crear VM Oracle
 resource "google_compute_instance" "oracle_instance" {
   name         = var.instance_name
   machine_type = var.machine_type
@@ -45,6 +45,7 @@ resource "google_compute_instance" "oracle_instance" {
   tags = ["oracle-db"]
 }
 
+# Firewall para permitir acceso al puerto Oracle (1521)
 resource "google_compute_firewall" "oracle_firewall" {
   name    = "allow-oracle"
   network = "default"
@@ -57,3 +58,4 @@ resource "google_compute_firewall" "oracle_firewall" {
   target_tags   = ["oracle-db"]
   source_ranges = ["0.0.0.0/0"]
 }
+
