@@ -1,20 +1,3 @@
-terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">=5.0.0"
-    }
-  }
-  required_version = ">= 1.5.0"
-}
-
-provider "google" {
-  credentials = var.credentials_content
-  project     = var.project_id
-  region      = var.region
-  zone        = var.zone
-}
-
 # Crear VM Oracle
 resource "google_compute_instance" "oracle_instance" {
   name         = var.instance_name
