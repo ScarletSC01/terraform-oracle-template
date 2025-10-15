@@ -10,16 +10,16 @@ pipeline {
     }
 
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key') // tu Service Account
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key')
         PROJECT_ID = 'jenkins-terraform-demo-472920'
         REGION = 'us-central1'
         ZONE = 'us-central1-a'
+        TFVARS = "-var=credentials_file=./gcp-key.json -var=project_id=$PROJECT_ID -var=region=$REGION -var=zone=$ZONE"
     }
 
     stages {
         stage('Preparar credenciales') {
             steps {
-                // Guardar el contenido de la credencial en un archivo temporal
                 sh '''
                 echo "$GOOGLE_APPLICATION_CREDENTIALS" > ./gcp-key.json
                 '''
@@ -36,31 +36,12 @@ pipeline {
             steps {
                 script {
                     if (params.ACTION == 'plan') {
-                        sh '''
-                        terraform plan \
-                            -var="credentials_file=./gcp-key.json" \
-                            -var="project_id=$PROJECT_ID" \
-                            -var="region=$REGION" \
-                            -var="zone=$ZONE" \
-                            -out=tfplan
-                        '''
+                        sh "terraform plan $TFVARS -out=tfplan"
                     } else if (params.ACTION == 'apply') {
-                        sh '''
-                        terraform apply -auto-approve \
-                            -var="credentials_file=./gcp-key.json" \
-                            -var="project_id=$PROJECT_ID" \
-                            -var="region=$REGION" \
-                            -var="zone=$ZONE" \
-                            tfplan
-                        '''
+                        // No pasar variables al aplicar un plan guardado
+                        sh "terraform apply -auto-approve tfplan"
                     } else if (params.ACTION == 'destroy') {
-                        sh '''
-                        terraform destroy -auto-approve \
-                            -var="credentials_file=./gcp-key.json" \
-                            -var="project_id=$PROJECT_ID" \
-                            -var="region=$REGION" \
-                            -var="zone=$ZONE"
-                        '''
+                        sh "terraform destroy -auto-approve $TFVARS"
                     }
                 }
             }
