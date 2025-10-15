@@ -16,7 +16,6 @@ provider "google" {
   zone        = var.zone
 }
 
-# Crear una VM con Oracle
 resource "google_compute_instance" "oracle_instance" {
   name         = var.instance_name
   machine_type = var.machine_type
@@ -40,9 +39,21 @@ resource "google_compute_instance" "oracle_instance" {
     echo "Instalando Oracle..."
     sudo apt update -y
     sudo apt install -y wget unzip
-    # Simulación de instalación (en práctica se usaría un instalador real)
     echo "Oracle instalado correctamente" > /tmp/oracle_install.log
   EOT
 
   tags = ["oracle-db"]
+}
+
+resource "google_compute_firewall" "oracle_firewall" {
+  name    = "allow-oracle"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["1521"]
+  }
+
+  target_tags   = ["oracle-db"]
+  source_ranges = ["0.0.0.0/0"]
 }
