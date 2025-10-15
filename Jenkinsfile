@@ -36,10 +36,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Despliegue completado con éxito."
+            echo "Despliegue completado con éxito."
         }
         failure {
-            echo "❌ Error en el despliegue de Terraform."
+            echo "Error en el despliegue de Terraform."
         }
     }
 }
