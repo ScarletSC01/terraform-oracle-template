@@ -35,14 +35,15 @@ pipeline {
         stage('Ejecutar Terraform') {
             steps {
                 script {
-                    if (params.ACTION == 'plan') {
-                        sh "terraform plan $TFVARS -out=tfplan"
-                    } else if (params.ACTION == 'apply') {
-                        // No pasar variables al aplicar un plan guardado
-                        sh "terraform apply -auto-approve tfplan"
-                    } else if (params.ACTION == 'destroy') {
-                        sh "terraform destroy -auto-approve $TFVARS"
-                    }
+            if (params.ACTION == 'plan') {
+                sh "terraform plan $TFVARS -out=tfplan"
+            } else if (params.ACTION == 'apply') {
+                // Genera el plan si no existe
+                sh "terraform plan $TFVARS -out=tfplan"
+                sh "terraform apply -auto-approve tfplan"
+            } else if (params.ACTION == 'destroy') {
+                sh "terraform destroy -auto-approve $TFVARS"
+            }
                 }
             }
         }
