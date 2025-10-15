@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['plan', 'apply', 'destroy'],
+            description: 'Selecciona la acción de Terraform a ejecutar'
+        )
+    }
+
     environment {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key')
         PROJECT_ID = 'jenkins-terraform-demo-472920'
@@ -15,31 +23,38 @@ pipeline {
             }
         }
 
-        stage('Planificar Infraestructura') {
+        stage('Ejecutar Terraform') {
             steps {
-                sh '''
-                terraform plan -var="credentials_file=$GOOGLE_APPLICATION_CREDENTIALS" \
-                               -var="project_id=$PROJECT_ID" \
-                               -out=tfplan
-                '''
-            }
-        }
-
-        stage('Aplicar Cambios') {
-            steps {
-                sh '''
-                terraform apply -auto-approve tfplan
-                '''
+                script {
+                    if (params.ACTION == 'plan') {
+                        sh '''
+                        terraform plan -var="credentials_file=$GOOGLE_APPLICATION_CREDENTIALS" \
+                                       -var="project_id=$PROJECT_ID" \
+                                       -out=tfplan
+                        '''
+                    } else if (params.ACTION == 'apply') {
+                        sh '''
+                        terraform apply -auto-approve tfplan
+                        '''
+                    } else if (params.ACTION == 'destroy') {
+                        sh '''
+                        terraform destroy -auto-approve -var="credentials_file=$GOOGLE_APPLICATION_CREDENTIALS" \
+                                                           -var="project_id=$PROJECT_ID"
+                        '''
+                    } else {
+                        error "Acción inválida: ${params.ACTION}"
+                    }
+                }
             }
         }
     }
 
     post {
         success {
-            echo "Despliegue completado con éxito."
+            echo "Terraform ejecutado correctamente: ${params.ACTION}"
         }
         failure {
-            echo "Error en el despliegue de Terraform."
+            echo "Error en la ejecución de Terraform"
         }
     }
 }
