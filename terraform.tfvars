@@ -1,7 +1,7 @@
 project_id    = "jenkins-terraform-demo-472920"
 region        = "us-central1"
 zone          = "us-central1-a"
-instance_name = "oracle-db-instance"
+instance_name = "oracle-db-instance-cl"
 machine_type  = "e2-medium"
 image         = "projects/oracle-linux-cloud/global/images/oracle-linux-8"
 credentials_file = "/var/lib/jenkins/gcp/credentials.json"
