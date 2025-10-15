@@ -1,3 +1,7 @@
+variable "credentials_file" {
+  type        = string
+  description = "Ruta del archivo de credenciales JSON de GCP"
+}
 variable "credentials_content" {
   type        = string
   description = "Contenido JSON de las credenciales GCP"
