@@ -1,8 +1,7 @@
-variable "credentials_file" {
-  description = "Ruta del archivo de credenciales JSON de GCP"
+variable "credentials_content" {
   type        = string
+  description = "Contenido JSON de las credenciales GCP"
 }
-
 variable "project_id" {
   description = "ID del proyecto en GCP"
   type        = string
@@ -37,9 +36,3 @@ variable "image" {
   type        = string
   default     = "projects/oracle-cloud-public/global/images/oracle-linux-8"
 }
-
-variable "credentials_content" {
-  type        = string
-  description = "Contenido JSON de las credenciales GCP"
-}
-
