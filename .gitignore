@@ -1,0 +1,7 @@
+# Ignorar archivos de estado de Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Ignorar credenciales sensibles
+*.tfvars
