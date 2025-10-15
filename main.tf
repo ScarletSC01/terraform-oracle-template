@@ -1,4 +1,4 @@
-# Crear VM Oracle
+# Crear una VM con Oracle
 resource "google_compute_instance" "oracle_instance" {
   name         = var.instance_name
   machine_type = var.machine_type
@@ -7,8 +7,9 @@ resource "google_compute_instance" "oracle_instance" {
 
   boot_disk {
     initialize_params {
-    image = "projects/oracle-linux-cloud/global/images/oracle-linux-8-v20250820"
-    size  = 50
+      # Imagen oficial de Oracle Linux (la más reciente estable)
+      image = "projects/oracle-cloud-public/global/images/oracle-linux-8-v20250820"
+      size  = 50
     }
   }
 
