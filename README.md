@@ -1,2 +1,2 @@
 # terraform-oracle-template
-Template de oracle 
+Template de oracle BD para CL
